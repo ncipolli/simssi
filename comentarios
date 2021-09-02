@@ -1,0 +1,9 @@
+Variáveis de volume:
+Volume inicial (volumeInicial) roda uma única vez no inicio do código e gera uma lista de valores de range 1-50;
+
+Volume anterior (volumeAnt) roda a cada atualização, representa o volume de carros em cada via após o fechamento de ciclo;
+
+Volume próximo (volumeProx) roda a cada atualização, representando os carros que chegaram nas vias após a troca de ciclo. range 1-10;
+
+Volume (volume) é a atualização do valor de volume que ficou quando o ciclo foi fechado e o volume de veículos que chegaram na troca de ciclo.
+
