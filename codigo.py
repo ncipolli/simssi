@@ -2,11 +2,10 @@
 
 import random
 
-class OptimizedSignal:
+class SinalOtimizado:
     def __init__(self):        
         pass
 
-# geração de dados
 #recebe volumeAnt
     def gerarDados(self):
         self.volumeInicial = random.sample(range(1, 50), 4)
@@ -15,7 +14,6 @@ class OptimizedSignal:
 
         #loop
         self.volumeProx = random.sample(range(1, 10), 4)
-
 
         volume = [val1 + val2 for val1, val2 in zip(self.volumeAnt, self.volumeProx)]
 
@@ -27,6 +25,7 @@ class OptimizedSignal:
     #tempo fixo
 
     #tempo real
+    #func não recebe arg volume vo tranca o curso
     def calculoCiclo(self, volume):
 
         self.pesoA = 5
@@ -34,10 +33,11 @@ class OptimizedSignal:
 
         self.statusA = 'amarelo'
         self.statusB = 'amarelo'
+        #self.volume = random.sample(range(10, 50), 4)
+    
     # definição de ciclos
     
         #valor a ser considerado na definição dos ciclos
-        # calculo = volume de cada via + peso
         self.val_um = volume[0] + self.pesoA
         self.val_dois = volume[1] + self.pesoB
         self.val_tres = volume[2] + self.pesoA
@@ -56,10 +56,11 @@ class OptimizedSignal:
         #elif self.valA == self.valB:
         #   aqui considera as condições
 
-
         else:
             statusA = 'amarelo'
             statusB = 'amarelo'
+
+        # considerar interação de emergência com a interface do usuário
 
         return statusA, statusB
 
@@ -72,8 +73,6 @@ class OptimizedSignal:
 # isso pode ser gerado diretamente na interface
     def atribuicaoValores(self, volume, condicao, statusA, statusB):
 
-    # avenida = volume, condição, status do semáfaro
-
         self.av_um = [volume[0], condicao[0],  statusA]
         self.av_dois = [volume[1], condicao[1], statusB]
         self.av_tres = [volume[2], condicao[2], statusA]
@@ -82,12 +81,10 @@ class OptimizedSignal:
         return self.av_um, self.av_dois, self.av_tres, self.av_quatro
         
 
+sinalOtimizado = SinalOtimizado()
+volume, condicao = sinalOtimizado.gerarDados()
+statusA, statusB = sinalOtimizado.calculoCiclo(volume)
+val1, val2, val3, val4 = sinalOtimizado.atribuicaoValores(volume, condicao, statusA, statusB)
 
-
-optimizedSignal = OptimizedSignal()
-volume = optimizedSignal.gerarDados()[0]
-condicao = optimizedSignal.gerarDados()[1]
-optimizedSignal.calculoCiclo(volume)
-statusA = optimizedSignal.calculoCiclo()[0]
-statusB = optimizedSignal.calculoCiclo()[1]
-print(optimizedSignal.atribuicaoValores(volume, condicao, statusA, statusB))
+if __name__ == '__main__':
+    #print(sinalOtimizado.atribuicaoValores(volume, condicao, statusA, statusB))
