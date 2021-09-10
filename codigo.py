@@ -3,44 +3,32 @@
 # !! - a fazer
 # !!!! - corrigir
 
-import schedule
-import time
-import random
+import time, random
 
 class SinalOtimizado:
     def __init__(self):        
         pass
 
-#recebe volumeAnt
     def gerarDados(self, volumeAnt):
 
         if volumeAnt == 0:
             volume = random.sample(range(1, 50), 4)
-            print("volumeAnt = 0")
-
         else:
             self.volumeProx = random.sample(range(1, 10), 4)
             volume = [val1 + val2 for val1, val2 in zip(volumeAnt, self.volumeProx)]
-            print("volumeAnt =/ 0")
 
         condicao = random.choices(["pedestre", "viatura", "emergencia", "nenhum"], [2, 1, 1, 6], k=4)
 
-        print(volume, condicao)
-
         return volume, condicao
-
-    #!! tempo fixo
 
     # tempo real
     def calculoCiclo(self, volume, condicao):
         # tempo perdido (s)
         # !!!!
-        if condicao == "pedestre":
+        if condicao[0] == "pedestre" or condicao[1] == "pedestre" or condicao[2] == "pedestre" or condicao[3] == "pedestre":
             self.tp = 28
-            print("pedestre = true")
         else:
             self.tp = 18
-            print("pedestre = false")
 
         # taxa de ocupação (ucp/h)
         self.y = sum(volume) / 1800
@@ -52,7 +40,6 @@ class SinalOtimizado:
         # !! Todos os intervalos devem ser arredondados para serem múltiplos de um segundo.
         self.tc = round(self.tco)
 
-        print(self.tc)
         return self.tc
 
 
@@ -62,10 +49,12 @@ class SinalOtimizado:
         self.statusB = "vermelho"
 
         # !!!! troca de status
-        self.statusA = self.statusB
-        self.statusB = self.statusA
 
         # !! if condição
+        '''if stop == True
+            status = vermelho
+        else
+            codigo'''
 
         # volume anterior
 
@@ -81,7 +70,8 @@ class SinalOtimizado:
 
         self.status = [self.statusA, self.statusB]
 
-        print(self.volumeAnt, self.status)
+        print("status, val: ")
+        print(self.status, self.val)
         return self.volumeAnt, self.status
     
 
@@ -96,26 +86,75 @@ class SinalOtimizado:
         self.av_tres = [volume[2], condicao[2], statusA]
         self.av_quatro = [volume[3], condicao[3], statusB]
 
+        print("avs: ")
         print(self.av_um, self.av_dois, self.av_tres, self.av_quatro)
 
         return self.av_um, self.av_dois, self.av_tres, self.av_quatro
+
+
+# função do semáforo comum
+    def semaforoComum(self):
+
+        # valor de tempo de ciclo pré determinado
+        self.tc = 10
+
+        # troca de status
+        self.statusA = "vermelho"
+        self.statusB = "vermelho"
+        print(self.statusA, self.statusB)
+        time.sleep(2)
+
+        self.statusA = "verde"
+        self.val = random.sample(range(5, 10), 2)
+        self.retirada = [self.val[0], 0, self.val[1], 0]
+        self.volumeAnt = [valA - valB for valA, valB in zip(volume, self.retirada)]
+        print(self.statusA, self.statusB, self.volumeAnt)
+        time.sleep(self.tc)
+
+        self.statusA = "amarelo"
+        print(self.statusA, self.statusB)
+        time.sleep(2)
+
+        self.statusA = "vermelho"
+        print(self.statusA, self.statusB)
+        time.sleep(2)
+
+        self.statusB = "verde"
+        self.val = random.sample(range(5, 10), 2)
+        self.retirada = [0, self.val[0], 0, self.val[1]]
+        self.volumeAnt = [valA - valB for valA, valB in zip(volume, self.retirada)]
+        print(self.statusA, self.statusB, self.volumeAnt)
+        time.sleep(self.tc)
+
+        self.statusB = "amarelo"
+        print(self.statusA, self.statusB)
+        time.sleep(2)
+
+        self.statusc = [self.statusA, self.statusB]
+
+        if volumeAnt == 0:
+            self.volume = random.sample(range(1, 50), 4)
+
+        else:
+            self.volumeProx = random.sample(range(1, 10), 4)
+            self.volume = [val1 + val2 for val1, val2 in zip(volumeAnt, self.volumeProx)]
+
+        print(self.volumeAnt, self.volumeProx, self.volume)
+        return self.statusc, self.volume
         
 
 sinalOtimizado = SinalOtimizado()
-volumeAnt = 0
-volume, condicao = sinalOtimizado.gerarDados(volumeAnt)
-tco = sinalOtimizado.calculoCiclo(volume, condicao)
-volumeAnt, status = sinalOtimizado.definicaoCiclo(volume)
-val1, val2, val3, val4 = sinalOtimizado.atribuicaoValores(volume, condicao, status)
 
-#val1, val2, val3, val4 = sinalOtimizado.atribuicaoValores(volume, condicao, statusA, statusB)
+volumeAnt = 0
 
 #if __name__ == '__main__':
     #print(sinalOtimizado.atribuicaoValores(volume, condicao, statusA, statusB))
 
-#schedule.every(20).seconds.do(sinalOtimizado.calculoCiclo)
-
-#while True:
- #   schedule.run_pending()
-  #  time.sleep(5)
+while True:
+    volume, condicao = sinalOtimizado.gerarDados(volumeAnt)
+    tco = sinalOtimizado.calculoCiclo(volume, condicao)
+    volumeAnt, status = sinalOtimizado.definicaoCiclo(volume)
+    val1, val2, val3, val4 = sinalOtimizado.atribuicaoValores(volume, condicao, status)
+    
+    time.sleep(30)
 
