@@ -14,6 +14,14 @@ class SinalOtimizado:
         if volumeAnt == 0:
             volume = random.sample(range(1, 50), 4)
         else:
+            for index, value in enumerate(volumeAnt):
+                if value < 0:
+                    volumeAnt[index] = 0
+
+            #print("primeiro def")
+            #print(self.volumeAnt)
+
+
             self.volumeProx = random.sample(range(1, 10), 4)
             volume = [val1 + val2 for val1, val2 in zip(volumeAnt, self.volumeProx)]
 
@@ -70,8 +78,7 @@ class SinalOtimizado:
 
         self.status = [self.statusA, self.statusB]
 
-        print("status, val: ")
-        print(self.status, self.val)
+        #print(self.volumeAnt)
         return self.volumeAnt, self.status
     
 
@@ -86,8 +93,8 @@ class SinalOtimizado:
         self.av_tres = [volume[2], condicao[2], statusA]
         self.av_quatro = [volume[3], condicao[3], statusB]
 
-        print("avs: ")
-        print(self.av_um, self.av_dois, self.av_tres, self.av_quatro)
+        #print("avs: ")
+        #print(self.av_um, self.av_dois, self.av_tres, self.av_quatro)
 
         return self.av_um, self.av_dois, self.av_tres, self.av_quatro
 
@@ -156,5 +163,5 @@ while True:
     volumeAnt, status = sinalOtimizado.definicaoCiclo(volume)
     val1, val2, val3, val4 = sinalOtimizado.atribuicaoValores(volume, condicao, status)
     
-    time.sleep(30)
+    time.sleep(20)
 
