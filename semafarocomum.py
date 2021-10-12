@@ -63,6 +63,8 @@ class SemaforoComum:
 
 sc = SemaforoComum()
 volumeAnt = 0
+status = sc.semaforo_comum()[0]
+volume = sc.semaforo_comum()[1]
 
 while True:
     sc.semaforo_comum()

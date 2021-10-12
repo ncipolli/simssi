@@ -7,7 +7,7 @@ import time, random, csv
 
 class SinalOtimizado:
     def __init__(self):
-        #no need for this sh*t        
+        #    
         pass
 
     def gerar_dados(self, volumeAnt):
@@ -19,8 +19,8 @@ class SinalOtimizado:
                 if value < 0:
                     volumeAnt[index] = 0
 
-            self.volumeProx = random.sample(range(1, 10), 4)
-            volume = [val1 + val2 for val1, val2 in zip(volumeAnt, self.volumeProx)]
+            volumeProx = random.sample(range(1, 10), 4)
+            volume = [val1 + val2 for val1, val2 in zip(volumeAnt, volumeProx)]
 
         condicao = random.choices(["pedestre", "viatura", "emergencia", "nenhum"], [2, 1, 1, 6], k=4)
 
@@ -29,76 +29,98 @@ class SinalOtimizado:
 
     def calculo_ciclo(self, volume, condicao):
         # tempo perdido (s)
-        if condicao[0] == "pedestre" or condicao[1] == "pedestre" or condicao[2] == "pedestre" or condicao[3] == "pedestre":
-            self.tp = 28
+        if "pedestre" in condicao:
+            tp = 22.9
         else:
-            self.tp = 18
+            tp = 12
+
+        # tempo de vermelho geral (s)
+        tvg = 0.31
 
         # taxa de ocupação (ucp/h)
-        self.y = sum(volume) / 1800
-
+        #ton = taxa de ocupação do estagio n
+        to1 = (volume[0] + volume[2]) / 2000
+        to2 = (volume[1] + volume[3]) / 2000
+        tot = sum(volume) / 2000
+        print('taxa ocup total: ')
+        print(tot)
         # tempo de ciclo ótimo (s)
-        self.tco = ((1.5 * 28) + 5) / (1 - (self.y * 1 + self.y * 2))
-
+        tco = (1.5 * tp + 5) / (1 - (to1 + to2))
         # !! O tempo de ciclo deve ser ajustado para um múltiplo de 5 s (para C < 90 s) ou 10 s (para C > 90 S).
         # !! Todos os intervalos devem ser arredondados para serem múltiplos de um segundo.
-        self.tc = round(self.tco)
+        tc = round(tco)
 
-        return self.tc
+        print('tempo de ciclo: ')
+        print(tc)
+        # tempo de verde efetivo (s)
+        tve1 = (tco  - tp) * (to1 / tot)
+        tve2 = (tco  - tp) * (to2 / tot)
+        tve = tve1 + tve2
+        print('verde efetivo: ')
+        print(tve)
+        # tempo de verde real (s)
+        tvr = tve - tvg + tp
+
+        print('verde real: ')
+        print(tvr)
+
+        return tc, tvr
 
 
-    def definicao_ciclo(self, volume, condicao):
+    def definicao_status(self, volume, condicao):
 
-        self.statusA = "amarelo"
-        self.statusB = "amarelo"
+        statusA = "amarelo"
+        statusB = "amarelo"
 
         # troca de status
         # considerar botões
 
         if condicao[0] == "emergencia" or condicao[2] == "emergencia":
-            self.statusA = "verde"
-            self.statusB = "vermelho"
+            statusA = "verde"
+            statusB = "vermelho"
         elif condicao[1] == "emergencia" or condicao[3] == "emergencia":
-            self.statusA = "vermelho"
-            self.statusB = "verde"
+            statusA = "vermelho"
+            statusB = "verde"
         else:
             volumeA = volume[0] + volume[2]
             volumeB = volume [1] + volume[3]
             if  volumeA > volumeB:
-                self.statusA = "verde"
-                self.statusB = "vermelho"
+                statusA = "verde"
+                statusB = "vermelho"
             elif volumeB > volumeA:
-                self.statusA = "vermelho"
-                self.statusB = "verde"
+                statusA = "vermelho"
+                statusB = "verde"
 
-        self.status = [self.statusA, self.statusB]
+        status = [statusA, statusB]
 
-        return self.status
+        return status
     
 
-    def volume_anterior(self, status):
-        self.val = random.sample(range(5, 10), 2)
+    def volume_anterior(self, status, tc):
+        val = random.sample(range(5, 15), 2)
+        print('val: ')
+        print(val)
 
-        if self.status[0] == "verde":
-            self.retirada = [self.val[0], 0, self.val[1], 0]
-            self.volumeAnt = [valA - valB for valA, valB in zip(volume, self.retirada)]
+        if status[0] == "verde":
+            retirada = [val[0], 0, val[1], 0]
+            volumeAnt = [valA - valB for valA, valB in zip(volume, retirada)]
         else:
-            self.retirada = [0, self.val[0], 0, self.val[1]]
-            self.volumeAnt = [valA - valB for valA, valB in zip(volume, self.retirada)]
+            retirada = [0, val[0], 0, val[1]]
+            volumeAnt = [valA - valB for valA, valB in zip(volume, retirada)]
 
-        return self.volumeAnt
+        return volumeAnt
 
 
     def atribuicao_valores(self, volume, condicao, status):
 
         statusA, statusB = status
 
-        self.av_um = [volume[0], condicao[0],  statusA]
-        self.av_dois = [volume[1], condicao[1], statusB]
-        self.av_tres = [volume[2], condicao[2], statusA]
-        self.av_quatro = [volume[3], condicao[3], statusB]
+        av_um = [volume[0], condicao[0],  statusA]
+        av_dois = [volume[1], condicao[1], statusB]
+        av_tres = [volume[2], condicao[2], statusA]
+        av_quatro = [volume[3], condicao[3], statusB]
 
-        return self.av_um, self.av_dois, self.av_tres, self.av_quatro
+        return av_um, av_dois, av_tres, av_quatro
         
 
 so = SinalOtimizado()
@@ -110,12 +132,11 @@ volumeAnt = 0
 
 while True:
     volume, condicao = so.gerar_dados(volumeAnt)
-    tco = so.calculo_ciclo(volume, condicao)
-    status = so.definicao_ciclo(volume, condicao)
-    volumeAnt = so.volume_anterior(status)
+    tc, tvr = so.calculo_ciclo(volume, condicao)
+    status = so.definicao_status(volume, condicao)
+    volumeAnt = so.volume_anterior(status, tc)
     val1, val2, val3, val4 = so.atribuicao_valores(volume, condicao, status)
     
-    #print(volume, condicao, tco, status)
+    print(val1, val2, val3, val4, tc)
     
-    #ele só roda depois da mudança de status
-    time.sleep(tco)
+    time.sleep(tc)

@@ -1,10 +1,17 @@
 import tkinter as tk
 from tkinter import messagebox
-import codigo
+
+import semaforootimizado as so
 
 
 class Application:
     def __init__(self, master=None):
+
+        vol1, cond1, stt1 = so.val1
+
+        #atribuição do semaforo comum
+        statuscA = "Verde"
+        statuscB = "Vermelho"
 
         # dados gerais
 
@@ -18,7 +25,7 @@ class Application:
         # dados das vias com uso dos semáforos com otimização
 
         self.SOtxt1 = tk.Label(text="Avenida 1")
-        self.SOvol1 = tk.Label(text="1")
+        self.SOvol1 = tk.Label(text=" " + vol1)
         self.SOcond1 = tk.Label(text="2")
         self.SOsin1 = tk.Label(text="3")
         self.SObt1 = tk.Button(text="Parada", command=self.botaoA)
@@ -49,19 +56,19 @@ class Application:
         # row 4 - dados das vias com uso dos semáforos comuns
         self.SCtxt1 = tk.Label(text="Avenida 1")
         self.SCvol1 = tk.Label(text="volume 1")
-        self.SCsin1 = tk.Label(text="sinal 1")
+        self.SCsin1 = tk.Label(text="" + statuscA)
 
         self.SCtxt2 = tk.Label(text="Avenida 2")
         self.SCvol2 = tk.Label(text="volume 2")
-        self.SCsin2 = tk.Label(text="sinal2")
+        self.SCsin2 = tk.Label(text="" + statuscB)
 
         self.SCtxt3 = tk.Label(text="Avenida 3")
         self.SCvol3 = tk.Label(text="volume 3")
-        self.SCsin3 = tk.Label(text="sinal 3")
+        self.SCsin3 = tk.Label(text="" + statuscA)
 
         self.SCtxt4 = tk.Label(text="Avenida 4")
         self.SCvol4 = tk.Label(text="volume 4")
-        self.SCsin4 = tk.Label(text="sinal 4")
+        self.SCsin4 = tk.Label(text="" + statuscB)
 
         # row 5 - botões de sair e simulação
         self.sair = tk.Button(text="Sair", width=5, command=self.ExitApp)
@@ -142,7 +149,7 @@ class Application:
 
 
 root = tk.Tk()
-root.title("SIMSSI - Controle do Usuário")
+root.title("SIMSSI - Controle do Administrador")
 root.geometry("400x400")
 
 Application(root)
