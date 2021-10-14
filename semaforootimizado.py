@@ -1,9 +1,6 @@
-# intersessão em X
+# interseção 4 vias
 
-# !! - a fazer
-# !!!! - corrigir
-
-import time, random, csv
+import time, random
 
 class SinalOtimizado:
     def __init__(self):
@@ -11,7 +8,6 @@ class SinalOtimizado:
         pass
 
     def gerar_dados(self, volumeAnt):
-
         if volumeAnt == 0:
             volume = random.sample(range(1, 50), 4)
         else:
@@ -35,44 +31,34 @@ class SinalOtimizado:
             tp = 12
 
         # tempo de vermelho geral (s)
-        tvg = 0.31
+        #tvg = 0.31
 
         # taxa de ocupação (ucp/h)
         #ton = taxa de ocupação do estagio n
         to1 = (volume[0] + volume[2]) / 2000
         to2 = (volume[1] + volume[3]) / 2000
         tot = sum(volume) / 2000
-        print('taxa ocup total: ')
-        print(tot)
+
         # tempo de ciclo ótimo (s)
-        tco = (1.5 * tp + 5) / (1 - (to1 + to2))
-        # !! O tempo de ciclo deve ser ajustado para um múltiplo de 5 s (para C < 90 s) ou 10 s (para C > 90 S).
-        # !! Todos os intervalos devem ser arredondados para serem múltiplos de um segundo.
+        tco = (1.5 * tp + 5) / (1 - tot)
+        
         tc = round(tco)
 
-        print('tempo de ciclo: ')
-        print(tc)
         # tempo de verde efetivo (s)
         tve1 = (tco  - tp) * (to1 / tot)
         tve2 = (tco  - tp) * (to2 / tot)
         tve = tve1 + tve2
-        print('verde efetivo: ')
-        print(tve)
+
         # tempo de verde real (s)
-        tvr = tve - tvg + tp
+        #tvr = tve - tvg + tp
 
-        print('verde real: ')
-        print(tvr)
-
-        return tc, tvr
+        return tc, tve, tot
 
 
     def definicao_status(self, volume, condicao):
+        statusA = "vermelho"
+        statusB = "vermelho"
 
-        statusA = "amarelo"
-        statusB = "amarelo"
-
-        # troca de status
         # considerar botões
 
         if condicao[0] == "emergencia" or condicao[2] == "emergencia":
@@ -96,10 +82,8 @@ class SinalOtimizado:
         return status
     
 
-    def volume_anterior(self, status, tc):
-        val = random.sample(range(5, 15), 2)
-        print('val: ')
-        print(val)
+    def volume_anterior(self, status):
+        val = random.sample(range(10, 20), 2)
 
         if status[0] == "verde":
             retirada = [val[0], 0, val[1], 0]
@@ -132,11 +116,12 @@ volumeAnt = 0
 
 while True:
     volume, condicao = so.gerar_dados(volumeAnt)
-    tc, tvr = so.calculo_ciclo(volume, condicao)
+    tc, tve, tot = so.calculo_ciclo(volume, condicao)
     status = so.definicao_status(volume, condicao)
-    volumeAnt = so.volume_anterior(status, tc)
+    volumeAnt = so.volume_anterior(status)
     val1, val2, val3, val4 = so.atribuicao_valores(volume, condicao, status)
-    
-    print(val1, val2, val3, val4, tc)
+
+    print("dados:")
+    print(volume, condicao, tc, tve, tot, status)
     
     time.sleep(tc)
