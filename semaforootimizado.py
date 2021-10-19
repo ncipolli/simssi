@@ -30,8 +30,8 @@ class SinalOtimizado:
         else:
             tp = 12
 
-        # tempo de vermelho geral (s)
-        #tvg = 0.31
+        # entreverdes (s)
+        ent = 11.19
 
         # taxa de ocupação (ucp/h)
         #ton = taxa de ocupação do estagio n
@@ -42,17 +42,18 @@ class SinalOtimizado:
         # tempo de ciclo ótimo (s)
         tco = (1.5 * tp + 5) / (1 - tot)
         
-        tc = round(tco)
-
         # tempo de verde efetivo (s)
         tve1 = (tco  - tp) * (to1 / tot)
         tve2 = (tco  - tp) * (to2 / tot)
         tve = tve1 + tve2
 
         # tempo de verde real (s)
-        #tvr = tve - tvg + tp
+        tvr = tve - ent + tp
 
-        return tc, tve, tot
+        tv = round(tvr)
+        tc = round(tco)
+
+        return tc, tv
 
 
     def definicao_status(self, volume, condicao):
@@ -116,12 +117,11 @@ volumeAnt = 0
 
 while True:
     volume, condicao = so.gerar_dados(volumeAnt)
-    tc, tve, tot = so.calculo_ciclo(volume, condicao)
+    tc, tv = so.calculo_ciclo(volume, condicao)
     status = so.definicao_status(volume, condicao)
     volumeAnt = so.volume_anterior(status)
     val1, val2, val3, val4 = so.atribuicao_valores(volume, condicao, status)
 
-    print("dados:")
-    print(volume, condicao, tc, tve, tot, status)
+    print(volume, condicao, tc, tv, status)
     
     time.sleep(tc)
