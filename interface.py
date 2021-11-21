@@ -1,157 +1,138 @@
 import tkinter as tk
 from tkinter import messagebox
-
-import semaforootimizado as so
-
+import inter
 
 class Application:
     def __init__(self, master=None):
 
-        vol1, cond1, stt1 = so.val1
-
-        #atribuição do semaforo comum
-        statuscA = "Verde"
-        statuscB = "Vermelho"
-
         # dados gerais
-
-        self.SIMSSI = tk.Label(text="SIMSSI")
-        self.SIMSSI["font"] = ("Verdana", "10", "bold")
+        SIMSSI = tk.Label(text="SIMSSI - Controle do Administrador")
+        SIMSSI["font"] = ("Verdana", "12", "bold")
 
         # titulo sem. otimizado
-        self.SemOtm = tk.Label(text="Dados com Semáforo Otimizado")
-        self.SemOtm["font"] = ("Verdana", "10", "bold")
+        SemOtm = tk.Label(text="Informações Semafóricas")
+        SemOtm["font"] = ("Verdana", "11", "bold")
+
+        # legendas da tabela
+        inforua = tk.Label(text="Rua")
+        infovol = tk.Label(text="Volume")
+        infocond = tk.Label(text="Condição")
+        infostt = tk.Label(text="Estágio")
+        inforua["font"] = ("Verdana", "10", "bold")
+        infovol["font"] = ("Verdana", "10", "bold")
+        infocond["font"] = ("Verdana", "10", "bold")
+        infostt["font"] = ("Verdana", "10", "bold")
 
         # dados das vias com uso dos semáforos com otimização
 
-        self.SOtxt1 = tk.Label(text="Avenida 1")
-        self.SOvol1 = tk.Label(text=" " + vol1)
-        self.SOcond1 = tk.Label(text="2")
-        self.SOsin1 = tk.Label(text="3")
-        self.SObt1 = tk.Button(text="Parada", command=self.botaoA)
+        SOtxt1 = tk.Label(text="RUA A")
+        SOvol1 = tk.Label(text="" + inter.vol1)
+        SOcond1 = tk.Label(text="" + inter.cond1)
+        SOsin1 = tk.Label(text="" + inter.st1)
 
-        self.SOtxt2 = tk.Label(text="Avenida 2")
-        self.SOvol2 = tk.Label(text="1")
-        self.SOcond2 = tk.Label(text="2")
-        self.SOsin2 = tk.Label(text="3")
-        self.SObt2 = tk.Button(text="Parada", command=self.botaoB)
+        SOtxt2 = tk.Label(text="RUA B")
+        SOvol2 = tk.Label(text="" + inter.vol2)
+        SOcond2 = tk.Label(text="" + inter.cond2)
+        SOsin2 = tk.Label(text="" + inter.st2)
 
-        self.SOtxt3 = tk.Label(text="Avenida 3")
-        self.SOvol3 = tk.Label(text="1")
-        self.SOcond3 = tk.Label(text="2")
-        self.SOsin3 = tk.Label(text="3")
-        self.SObt3 = tk.Button(text="Parada", command=self.botaoA)
+        SOtxt3 = tk.Label(text="RUA C")
+        SOvol3 = tk.Label(text="" + inter.vol3)
+        SOcond3 = tk.Label(text="" + inter.cond3)
+        SOsin3 = tk.Label(text="" + inter.st3)
 
-        self.SOtxt4 = tk.Label(text="Avenida 4")
-        self.SOvol4 = tk.Label(text="1")
-        self.SOcond4 = tk.Label(text="2")
-        self.SOsin4 = tk.Label(text="3")
-        self.SObt4 = tk.Button(text="Parada", command=self.botaoB)
+        SOtxt4 = tk.Label(text="RUA D")
+        SOvol4 = tk.Label(text="" + inter.vol4)
+        SOcond4 = tk.Label(text="" + inter.cond4)
+        SOsin4 = tk.Label(text="" + inter.st4)
 
+        # row 3 - titulo informações
+        infotxt = tk.Label(text="Informações da Interseção")
+        infotxt["font"] = ("Verdana", "11", "bold")
 
-        # row 3 - titulo sem. comum
-        self.SemCom = tk.Label(text="Dados com Semáforo Comum")
-        self.SemCom["font"] = ("Verdana", "10", "bold")
+        # row 4 - dados das vias
+        txoctxt = tk.Label(text="Taxa de Ocupação:")
+        txocval = tk.Label(text="" + inter.toc + "%")
 
-        # row 4 - dados das vias com uso dos semáforos comuns
-        self.SCtxt1 = tk.Label(text="Avenida 1")
-        self.SCvol1 = tk.Label(text="volume 1")
-        self.SCsin1 = tk.Label(text="" + statuscA)
+        estxt = tk.Label(text="Estágios")
 
-        self.SCtxt2 = tk.Label(text="Avenida 2")
-        self.SCvol2 = tk.Label(text="volume 2")
-        self.SCsin2 = tk.Label(text="" + statuscB)
+        vdtxt = tk.Label(text="Tempo de Verde do Ciclo:")
+        vdval = tk.Label(text="" + inter.vr + "s")
 
-        self.SCtxt3 = tk.Label(text="Avenida 3")
-        self.SCvol3 = tk.Label(text="volume 3")
-        self.SCsin3 = tk.Label(text="" + statuscA)
+        amtxt = tk.Label(text="Tempo de Amarelo:")
+        amval = tk.Label(text="11 s")
 
-        self.SCtxt4 = tk.Label(text="Avenida 4")
-        self.SCvol4 = tk.Label(text="volume 4")
-        self.SCsin4 = tk.Label(text="" + statuscB)
+        vmtxt = tk.Label(text="Tempo de Vermelho: ")
+        vmval = tk.Label(text="0,19 s")
 
         # row 5 - botões de sair e simulação
-        self.sair = tk.Button(text="Sair", width=5, command=self.ExitApp)
-
-        self.simulacao = tk.Button(text="Simulação")
+        sair = tk.Button(text="Sair", width=5, command=self.ExitApp)
 
         #criação das grids
-        self.SIMSSI.grid(row = 0, column = 0, columnspan= 3, padx = 10, pady = 10)
+        SIMSSI.grid(row = 0, column = 0, columnspan= 4, padx = 10, pady = 10)
 
-        self.SemOtm.grid(row = 1, column= 0, columnspan= 3)
+        SemOtm.grid(row = 1, column= 0, columnspan= 4, padx = 10, pady = 10)
 
-        #ruas sinal otm
-        self.SOtxt1.grid(row=2, column=0)
-        self.SOvol1.grid(row=2, column=1)
-        self.SOcond1.grid(row=2, column=2)
-        self.SOsin1.grid(row=2, column=3)
-        self.SObt1.grid(row=2, column=4)
+        inforua.grid(row=2, column=0, padx=10, pady=10)
+        infovol.grid(row=2, column=1, padx=10, pady=10)
+        infocond.grid(row=2, column=2, padx=10, pady=10)
+        infostt.grid(row=2, column=3, padx=10, pady=10)
 
-        self.SOtxt2.grid(row=3, column=0)
-        self.SOvol2.grid(row=3, column=1)
-        self.SOcond2.grid(row=3, column=2)
-        self.SOsin2.grid(row=3, column=3)
-        self.SObt2.grid(row=3, column=4)
+        # dados das ruas
+        SOtxt1.grid(row=3, column=0, padx=10, pady=10)
+        SOvol1.grid(row=3, column=1, padx=10, pady=10)
+        SOcond1.grid(row=3, column=2, padx=10, pady=10)
+        SOsin1.grid(row=3, column=3, padx=10, pady=10)
 
-        self.SOtxt3.grid(row=4, column=0)
-        self.SOvol3.grid(row=4, column=1)
-        self.SOcond3.grid(row=4, column=2)
-        self.SOsin3.grid(row=4, column=3)
-        self.SObt3.grid(row=4, column=4)
+        SOtxt2.grid(row=4, column=0, padx=10, pady=10)
+        SOvol2.grid(row=4, column=1, padx=10, pady=10)
+        SOcond2.grid(row=4, column=2, padx=10, pady=10)
+        SOsin2.grid(row=4, column=3, padx=10, pady=10)
 
-        self.SOtxt4.grid(row=5, column=0)
-        self.SOvol4.grid(row=5, column=1)
-        self.SOcond4.grid(row=5, column=2)
-        self.SOsin4.grid(row=5, column=3)
-        self.SObt4.grid(row=5, column=4)
+        SOtxt3.grid(row=5, column=0, padx=10, pady=10)
+        SOvol3.grid(row=5, column=1, padx=10, pady=10)
+        SOcond3.grid(row=5, column=2, padx=10, pady=10)
+        SOsin3.grid(row=5, column=3, padx=10, pady=10)
 
-        self.SemCom.grid(row=6, column=0, columnspan=3)
+        SOtxt4.grid(row=6, column=0, padx=10, pady=10)
+        SOvol4.grid(row=6, column=1, padx=10, pady=10)
+        SOcond4.grid(row=6, column=2, padx=10, pady=10)
+        SOsin4.grid(row=6, column=3, padx=10, pady=10)
 
-        #ruas sinais comuns
-        self.SCtxt1.grid(row=7, column=0)
-        self.SCvol1.grid(row=7, column=1)
-        self.SCsin1.grid(row=7, column=3)
+        # informações da interseção
 
-        self.SCtxt2.grid(row=8, column=0)
-        self.SCvol2.grid(row=8, column=1)
-        self.SCsin2.grid(row=8, column=3)
+        infotxt.grid(row=7, column=0, columnspan=4, padx=10, pady=10)
 
-        self.SCtxt3.grid(row=9, column=0)
-        self.SCvol3.grid(row=9, column=1)
-        self.SCsin3.grid(row=9, column=3)
+        txoctxt.grid(row=8, column=0, padx=10, pady=10)
+        txocval.grid(row=8, column=1, padx=10, pady=10)
 
-        self.SCtxt4.grid(row=10, column=0)
-        self.SCvol4.grid(row=10, column=1)
-        self.SCsin4.grid(row=10, column=3)
+        estxt.grid(row=9, column=0, padx=10, pady=10)
+        vdtxt.grid(row=9, column=1, padx=10, pady=10)
+        vdval.grid(row=9, column=3, padx=10, pady=10)
 
-        self.sair.grid(row=11, column=1)
-        self.simulacao.grid(row=11, column=2)
+        amtxt.grid(row=10, column=1, padx=10, pady=10)
+        amval.grid(row=10, column=3, padx=10, pady=10)
 
+        vmtxt.grid(row=11, column=1, padx=10, pady=10)
+        vmval.grid(row=11, column=3, padx=10, pady=10)
 
-    def botaoA(self):
-        MsgBox = tk.messagebox.askquestion('SIMSSI','Tem certeza que quer acionar a parada dessa via?',icon = 'error')
-        if MsgBox == 'yes':
-            self.botaoA = "parar"
-        return self.botaoA
+        # botão sair
 
-    def botaoB(self):
-        MsgBox = tk.messagebox.askquestion('SIMSSI','Tem certeza que quer acionar a parada dessa via?',icon = 'error')
-        if MsgBox == 'yes':
-            self.botaoB = "parar"
-        return self.botaoB
+        sair.grid(row=12, column=0, columnspan=4, padx=10, pady=10)
 
     def ExitApp(self):
         MsgBox2 = tk.messagebox.askquestion('SIMSSI','Sair do aplicativo?',icon = 'error')
         if MsgBox2 == 'yes':
             root.destroy()
 
-
-
-
 root = tk.Tk()
-root.title("SIMSSI - Controle do Administrador")
-root.geometry("400x400")
-
 Application(root)
-
+root.title("SIMSSI - Simulação da Implementação de Sistema Semafórico em Tempo Real")
+root.resizable(False, False)
+window_height = 600
+window_width = 500
+screen_width = root.winfo_screenwidth()
+screen_height = root.winfo_screenheight()
+x_cordinate = int((screen_width/2) - (window_width/2))
+y_cordinate = int((screen_height/2) - (window_height/2))
+root.geometry("{}x{}+{}+{}".format(window_width, window_height, x_cordinate, y_cordinate))
 root.mainloop()

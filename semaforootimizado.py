@@ -2,9 +2,10 @@
 
 import time, random
 
+
 class SinalOtimizado:
     def __init__(self):
-        #    
+        #
         pass
 
     def gerar_dados(self, volumeAnt):
@@ -22,7 +23,6 @@ class SinalOtimizado:
 
         return volume, condicao
 
-
     def calculo_ciclo(self, volume, condicao):
         # tempo perdido (s)
         if "pedestre" in condicao:
@@ -34,17 +34,17 @@ class SinalOtimizado:
         ent = 11.19
 
         # taxa de ocupação (ucp/h)
-        #ton = taxa de ocupação do estagio n
+        # ton = taxa de ocupação do estagio n
         to1 = (volume[0] + volume[2]) / 2000
         to2 = (volume[1] + volume[3]) / 2000
         tot = sum(volume) / 2000
 
         # tempo de ciclo ótimo (s)
         tco = (1.5 * tp + 5) / (1 - tot)
-        
+
         # tempo de verde efetivo (s)
-        tve1 = (tco  - tp) * (to1 / tot)
-        tve2 = (tco  - tp) * (to2 / tot)
+        tve1 = (tco - tp) * (to1 / tot)
+        tve2 = (tco - tp) * (to2 / tot)
         tve = tve1 + tve2
 
         # tempo de verde real (s)
@@ -53,15 +53,9 @@ class SinalOtimizado:
         tv = round(tvr)
         tc = round(tco)
 
-        return tc, tv
-
+        return tc, tv, tot
 
     def definicao_status(self, volume, condicao):
-        statusA = "vermelho"
-        statusB = "vermelho"
-
-        # considerar botões
-
         if condicao[0] == "emergencia" or condicao[2] == "emergencia":
             statusA = "verde"
             statusB = "vermelho"
@@ -70,8 +64,8 @@ class SinalOtimizado:
             statusB = "verde"
         else:
             volumeA = volume[0] + volume[2]
-            volumeB = volume [1] + volume[3]
-            if  volumeA > volumeB:
+            volumeB = volume[1] + volume[3]
+            if volumeA > volumeB:
                 statusA = "verde"
                 statusB = "vermelho"
             elif volumeB > volumeA:
@@ -81,7 +75,6 @@ class SinalOtimizado:
         status = [statusA, statusB]
 
         return status
-    
 
     def volume_anterior(self, status):
         val = random.sample(range(10, 20), 2)
@@ -95,33 +88,38 @@ class SinalOtimizado:
 
         return volumeAnt
 
-
     def atribuicao_valores(self, volume, condicao, status):
 
         statusA, statusB = status
 
-        av_um = [volume[0], condicao[0],  statusA]
+        av_um = [volume[0], condicao[0], statusA]
         av_dois = [volume[1], condicao[1], statusB]
         av_tres = [volume[2], condicao[2], statusA]
         av_quatro = [volume[3], condicao[3], statusB]
 
         return av_um, av_dois, av_tres, av_quatro
-        
+
 
 so = SinalOtimizado()
 
 volumeAnt = 0
 
-#if __name__ == '__main__':
-    #print(so.atribuicaoValores(volume, condicao, statusA, statusB))
-
 while True:
     volume, condicao = so.gerar_dados(volumeAnt)
-    tc, tv = so.calculo_ciclo(volume, condicao)
+    tc, tv, tot = so.calculo_ciclo(volume, condicao)
     status = so.definicao_status(volume, condicao)
     volumeAnt = so.volume_anterior(status)
     val1, val2, val3, val4 = so.atribuicao_valores(volume, condicao, status)
 
+    # formatação da taxa de ocupação para porcentagem
+    txo = "{0:.0f}%".format(tot * 100)
+
+    # escrever valores no arquivo
+    arquivo = open("valores.txt", "w")
+    arquivo.write(str(val1) + " \n" + str(val2) + " \n" + str(val3) + " \n" + str(val4) + " \n" + txo + " \n" + str(tv))
+    arquivo.close()
+
+    # if __name__ == '__main__':
     print(volume, condicao, tc, tv, status)
-    
+
     time.sleep(tc)
